@@ -1,4 +1,3 @@
-
 #include "notu_judge.hsp"
 notu_read("text\\fumen_test.csv")
 music_file=data@fumen_read(1)

@@ -3,7 +3,7 @@
 #module	notu_judge
 	#include "hspogg.as"
 	#deffunc write_notu
-	screen 0,500,700,0,0,0	; ウィンドウサイズ指定
+	screen 0,1280,1024,0,0,0	; ウィンドウサイズ指定
 
 	dmmini									; サウンド機能初期化
 	dmmload music_file@,1,0	; wavファイル読み込み
@@ -16,10 +16,10 @@
 	pic_goo=stat
 	celload "pics\\marker_png1_b.png",,0	; bad画像ファイル
 	pic_bad=stat
-	celdiv pic_id,100,100				; パーツのサイズ
-	celdiv pic_suc,150,150			; 一マスをピクセルで指定している。
-	celdiv pic_goo,150,150
-	celdiv pic_bad,150,150	
+	celdiv pic_id,222,222				; パーツのサイズ
+	celdiv pic_suc,222,222			; 一マスをピクセルで指定している。
+	celdiv pic_goo,222,222
+	celdiv pic_bad,222,222	
 	gmode 0											; 画面コピーモード指定
 	dim notu,4,4,2				; ノーツの配列(x,y,0)=フレーム数
 												; (x,y,1)=このノーツが起動中に立つ
@@ -27,7 +27,11 @@
 	dim actflag,4,4				;どのタイミングで押されたか判断フラグ(x,y)
 	dim pressed,4,4				;ボタン押されたら立つ(x,y)
 
+	dim copyToX,4
+	dim copyToY,4
+
 	pftiming = 14											;パーフェクトのフレーム
+	bairitu = 2
 	heartbeat_interval = 60000/tempo@	;一拍間隔(tempoはincludeされたmain.hsp内の変数だが、末尾に@
 																		;を付ければ利用できる。)
 	
@@ -44,9 +48,9 @@
 		await 1										;これが無いとhspがcpuを占領してしまい、
 															;落ちる。
 		time1 = d3timer()
-		if(time1 - time2 >= 40){
-			//fps = d3getfps()　　　fpsを測定できる。
-			//title "fps = "+ fps
+		if(time1 - time2 >= 38){
+			fps = d3getfps()　　　;fpsを測定できる。
+			title "fps = "+ fps
 			for i,0,4,1
 				for j,0,4,1
 					if(notu(i,j,1)&&notu(i,j,0)<25){	;各ノーツごとにフラグが立っているか
@@ -57,7 +61,9 @@
 						actflag(i,j)=0
 						pressed(i,j)=0
 					}
-					pos 10+i*110,100+j*110
+					posx=10+i*256
+					posy=j*256
+					pos posx,posy
 					if(pressed(i,j)==1&&actflag(i,j)==0){	;該当するキーが押されていて、
 																								;ノーツがすでに起動中でないとき
 						if(abs(notu(i,j,0)-pftiming)<=1){
@@ -72,16 +78,17 @@
 							}
 						}
 					}
+					
 					if(actflag(i,j)==0){											; actflagの値によって描画するノーツの種類変更
-						celput pic_id,notu(i,j,0)								;ただの黒四角に変えるべき?
+						celput pic_id,notu(i,j,0),1,1				;ただの黒四角に変えるべき?
 					}else{
 						if(actflag(i,j)==1){
-							celput pic_suc,notu(i,j,0)-(pftiming-1),0.666,0.666
+							celput pic_suc,notu(i,j,0)-(pftiming-1),1,1
 						}else{
 							if(actflag(i,j)==2){
-								celput pic_goo,notu(i,j,0)-(pftiming-2),0.666,0.666
+								celput pic_goo,notu(i,j,0)-(pftiming-2),1,1
 							}else{
-								celput pic_bad,notu(i,j,0)-(14+actflag(i)),0.666,0.666
+								celput pic_bad,notu(i,j,0)-(14+actflag(i)),1,1
 							}
 						}
 					}
