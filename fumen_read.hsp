@@ -8,8 +8,8 @@
 	//sdim p1,p2,p3	p1=変数,p2=文字数,p3~=要素数
 	;	CSVファイルの読み込み
 	;
-	sdim cline,50				; 1行データバッファ
-	sdim csv,10000			; csvデータバッファ
+	sdim cline,100				; 1行データバッファ
+	sdim csv,1000000			; csvデータバッファ
 	bload musictext,csv
 	
 	notesel csv

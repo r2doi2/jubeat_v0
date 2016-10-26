@@ -6,20 +6,27 @@
 	screen 0,1280,1024,0,0,0	; ウィンドウサイズ指定
 
 	dmmini									; サウンド機能初期化
-	dmmload music_file@,1,0	; wavファイル読み込み
+	mmload music_file@,1,0	; wavファイル読み込み
 	
-	celload "pics\\marker_s.jpg",,0	; 元画像ファイル
+	;celload "pics\\marker_s.jpg",,0	; 元画像ファイル
+	celload "pics\\allnormal2.png",,0	; 元画像ファイル
 	pic_id=stat											; 元画像のIDを保存
-	celload "pics\\marker_png1_p.png",,0	; perfect画像ファイル
+	;celload "pics\\marker_png1_p.png",,0	; perfect画像ファイル
+	celload "pics\\allperfect2.png",,0	; perfect画像ファイル
 	pic_suc=stat
-	celload "pics\\marker_png1_gd.png",,0	; good画像ファイル
+	;celload "pics\\marker_png1_gd.png",,0	; good画像ファイル
+	celload "pics\\allgood2.png",,0	; good画像ファイル
 	pic_goo=stat
-	celload "pics\\marker_png1_b.png",,0	; bad画像ファイル
+	;celload "pics\\marker_png1_b.png",,0	; bad画像ファイル
+	celload "pics\\allbad2.png",,0	; bad画像ファイル
 	pic_bad=stat
+	celload "pics\\blackbox.png",,0	; 黒箱画像ファイル
+	pic_bb=stat
 	celdiv pic_id,222,222				; パーツのサイズ
 	celdiv pic_suc,222,222			; 一マスをピクセルで指定している。
 	celdiv pic_goo,222,222
-	celdiv pic_bad,222,222	
+	celdiv pic_bad,222,222
+	celdiv pic_bb,222,222
 	gmode 0											; 画面コピーモード指定
 	dim notu,4,4,2				; ノーツの配列(x,y,0)=フレーム数
 												; (x,y,1)=このノーツが起動中に立つ
@@ -27,19 +34,16 @@
 	dim actflag,4,4				;どのタイミングで押されたか判断フラグ(x,y)
 	dim pressed,4,4				;ボタン押されたら立つ(x,y)
 
-	dim copyToX,4
-	dim copyToY,4
-
 	pftiming = 14											;パーフェクトのフレーム
 	bairitu = 2
 	heartbeat_interval = 60000/tempo@	;一拍間隔(tempoはincludeされたmain.hsp内の変数だが、末尾に@
 																		;を付ければ利用できる。)
-	
+	await 10000
 	time1 = d3timer()	//時計
 	time2 = d3timer()	//ノーツ描画計測
 	time3 = d3timer()	//譜面読み込み計測
 	time4 = d3timer()	//間隔保持計測
-	dmmplay 1
+	mmplay 1
 	while
 		while(time1 - time4 <= offset@)	; オフセット調整待ち
 			await 1
@@ -48,11 +52,14 @@
 		await 1										;これが無いとhspがcpuを占領してしまい、
 															;落ちる。
 		time1 = d3timer()
-		if(time1 - time2 >= 38){
+		if(time1 - time2 >= 35){
 			fps = d3getfps()　　　;fpsを測定できる。
 			title "fps = "+ fps
 			for i,0,4,1
 				for j,0,4,1
+					posx=10+i*256
+					posy=j*256
+					pos posx,posy
 					if(notu(i,j,1)&&notu(i,j,0)<25){	;各ノーツごとにフラグが立っているか
 						notu(i,j,0)++										;もしくはノーツ描画が終わったか
 					}else{
@@ -61,9 +68,6 @@
 						actflag(i,j)=0
 						pressed(i,j)=0
 					}
-					posx=10+i*256
-					posy=j*256
-					pos posx,posy
 					if(pressed(i,j)==1&&actflag(i,j)==0){	;該当するキーが押されていて、
 																								;ノーツがすでに起動中でないとき
 						if(abs(notu(i,j,0)-pftiming)<=1){
@@ -80,7 +84,11 @@
 					}
 					
 					if(actflag(i,j)==0){											; actflagの値によって描画するノーツの種類変更
-						celput pic_id,notu(i,j,0),1,1				;ただの黒四角に変えるべき?
+						if(notu(i,j,0)==0){
+							celput pic_bb,0,1,1
+						}else{
+							celput pic_id,notu(i,j,0),1,1						;ただの黒四角に変えるべき?
+						}
 					}else{
 						if(actflag(i,j)==1){
 							celput pic_suc,notu(i,j,0)-(pftiming-1),1,1
@@ -100,7 +108,7 @@
 			if(data@fumen_read(0)=="e"){					;"e"なら譜面部終わり
 				_break
 			}
-			notu_read("text\\fumen_test.csv")			;次の行読む
+			notu_read(csvtext@)			;次の行読む
 			for i,1,16,1
 				if(format_flag@fumen_read==0){			;includeしたfumen_read.hsp内のformat_flag変数も呼び出せる
 					if(data@fumen_read(i-1)==";"){
