@@ -1,0 +1,234 @@
+#include "d3m.hsp"
+#module	result_sisaku
+	#include "hspda.as"
+	#deffunc result_start
+sdim sco1,50
+sdim sco2,50
+sdim data3,30,30	
+sdim data4,30,30
+sdim runk_csv,10000
+	
+
+mmloadÅ@"se\\dram.mp3",2,0
+mmloadÅ@"se\\click01.mp3",3,0
+mmloadÅ@"se\\good1.mp3",4,0
+mmloadÅ@"se\\marvelous1.mp3",6,0
+mmloadÅ@"se\\excellent1.mp3",5,0
+mmloadÅ@"se\\mouhitoikidesu1.mp3",7,0
+screen 0,1280,1024,0,0,0	
+celload "pics\\fund.png",1
+pic_fd=stat	
+celdiv pic_fd,222,222	
+dim a,4,4							
+dim pressed,4,4		
+perfect_count=perfect_count@
+good_count=good_count@
+bad_count=bad_count@
+haba_yoko=10
+haba_tate=0
+break_flag=0
+
+score=perfect_count*100+good_count*50+bad_count*25
+data1=1.00 *(good_count + perfect_count)
+data2=bad_count + good_count + perfect_count
+ritu= data1 / data2 *100
+persent=1*ritu
+flag_runk=2
+
+
+font "Courier New", 70,16
+for i,0,4,1
+	for j,0,4,1
+		pos haba_yoko+i*256,haba_tate+j*256
+		celput 1
+	next
+next
+i=0
+pos haba_yoko+10,haba_tate+10
+color 255,241,15	
+mes "score"
+len=strlen(str(score))
+pos_kari=(10-len)*40
+mmplay 2
+for d,0,15,1
+	for j,0,5,1
+		color 0,0,0	
+		boxf haba_yoko+265,68,haba_yoko+750,0
+		pos haba_yoko+270,10
+		color 255,241,15	
+		mes ""+j+(j+1)+(j+3)+(j+2)+(j+4)
+		pos haba_yoko+515,10
+		mes ""+j+(j+1)+(j+3)+(j+2)+(j+4)
+		wait 5
+		next
+next
+
+
+color 0,0,0	
+boxf haba_yoko+270,0,haba_yoko+750,70
+mmplay 3
+color 255,241,15	
+
+pos	haba_yoko+515,10
+score_simo=score\100000
+score_kami=score/100000
+mes int(score_simo)
+pos	pos_kari+haba_yoko+265,10
+mes int(score_kami)
+font "Courier New", 45,16
+wait 50
+color 255	
+pos haba_yoko+10,haba_tate+100
+mes "perfect:"
+pos haba_yoko+270,98
+mes perfect_count
+mmplay 3
+i++
+wait 50
+color , 255
+pos haba_yoko+10,haba_tate+100+i*60
+mes "good:"
+pos haba_yoko+270,haba_tate+100+i*60
+mes good_count
+mmplay 3
+i=i+2
+wait 50
+color , , 255
+pos haba_yoko+10,haba_tate+100+i*60
+mes "bad:"
+pos haba_yoko+270,98+i*60
+mes bad_count
+mmplay 3
+i++
+wait 50
+color 255,183,76	
+pos haba_yoko+10,haba_tate+100+i*60
+mes "clear:"
+pos haba_yoko+270,haba_tate+100+i*60
+mes ""+persent + "%"
+mmplay 3
+pos haba_yoko+515,haba_tate+100+i*60
+font "Courier New", 70,16
+
+
+if(persent<50){
+	mmplay 7
+	color 39,38,114
+	mes " BAD"
+}else:if(persent<80){
+	mmplay 4
+	color 71,234,126
+	mes "GOOD"
+}else:if(persent<90){
+	mmplay 5
+	color 255,183,76
+	mes "EXCEL LENT"
+}else:if(persent<=100){
+	mmplay 6
+	color 255,94,25
+	mes "MARVE LOUS"
+}
+	color 250,250,250
+
+i=i+4
+wait 50
+font "ÇlÇr ÇoÉSÉVÉbÉN", 45,16
+/*if(strmid(kyoku@, 0, 2)="Ç†"){
+	bload "text\\runking\\runking.csv",runk_csv
+}else:if(strmid(kyoku@, 0, 2)="Ç¢"){
+	bload "text\\runking\\runking2.csv",runk_csv
+}*/
+bload "text\\runking\\"+kyoku@+".csv",runk_csv
+
+notesel runk_csv
+csvmax = notemax
+line_num=0
+pos haba_yoko+10,haba_tate+60+i*60
+while(break_flag=0)
+	noteget sco1,line_num
+	csvstr data3,sco1
+	
+
+
+	if(int(data3(0))==EOF){
+		mes "Ç†Ç»ÇΩÇÃ      èáà ÇÕ         "+(line_num+1)+"à Ç≈Ç∑"
+		break_flag=1
+		if(line_num=0){
+			mes "ÉNÅ[É|ÉìÇ   î≠çsÇµÇ‹Ç∑ÅB  ìXàıÇÇ®åƒ   Ç—Ç≠ÇæÇ≥Ç¢"
+		}
+
+	
+	}
+
+	data_buf=int(data3(0))
+	line_num++
+	noteget sco2,line_num
+	csvstr data4, sco2
+
+
+	if(data_buf < score ){
+		mes "Ç†Ç»ÇΩÇÃ       èáà ÇÕ         "+(line_num)+"à Ç≈Ç∑"
+		break_flag=1
+		if(line_num=1){
+			font "ÇlÇr ÇoÉSÉVÉbÉN", 45,16
+			mes "ÉNÅ[É|ÉìÇ   î≠çsÇµÇ‹Ç∑ÅB  ìXàıÇÇ®åƒ   Ç—Ç≠ÇæÇ≥Ç¢"
+			font "Courier New", 45,16
+		}
+	}else:if(data_buf = score ){
+		mes "Ç†Ç»ÇΩÇÃ       èáà ÇÕ         "+(line_num)+"à Ç≈Ç∑"
+		break_flag=1
+		if(line_num=1){
+			font "ÇlÇr ÇoÉSÉVÉbÉN", 45,16
+			mes "ÉNÅ[É|ÉìÇ   î≠çsÇµÇ‹Ç∑ÅB  ìXàıÇÇ®åƒ   Ç—Ç≠ÇæÇ≥Ç¢"
+			font "Courier New", 45,16
+		}
+	}else:if(data_buf > score && int(data4(0)) < score){
+		mes "Ç†Ç»ÇΩÇÃ       èáà ÇÕ         "+(line_num+1)+"à Ç≈Ç∑"
+		break_flag=1
+	}else:if( int(data4(0)) = EOF ){
+		mes "Ç†Ç»ÇΩÇÃ       èáà ÇÕ         "+(line_num+1)+"à Ç≈Ç∑"
+		break_flag=1
+	}
+wend
+font "Courier New", 45,16
+
+
+
+
+
+
+
+
+
+
+color 28,0,178	
+pos haba_yoko+30,haba_tate+120+718
+mes "Save "
+mes  "score?"
+;mmplay 3
+
+font "Courier New", 70,16
+color 255	
+pos haba_yoko+10+535,haba_tate+120+730
+mes "Yes!"
+color , , 255
+pos haba_yoko+10+790,haba_tate+120+730
+mes "No.."
+
+while(flag_runk==2)
+	getkey a(2,3),65+13	;n
+	getkey a(3,3),65+12	;m
+	pressed(2,3)=a(2,3)
+	pressed(3,3)=a(3,3)
+	if(pressed(2,3)==1){
+		flag_runk==1
+	}if(pressed(3,3)==1){
+		flag_runk==0
+	}
+	await 1	
+wend
+
+	
+
+	return
+#global

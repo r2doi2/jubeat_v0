@@ -1,0 +1,84 @@
+#include "d3m.hsp"
+#module	runking_viwer
+	#include "hspda.as"
+	#deffunc runking_viw
+sdim sco1,50
+sdim data1,30,30		
+sdim runk_csv,10000
+dim a,4,4							;ボタンの状態情報(x,y)
+dim pressed,4,4				;ボタン押されたら立つ(x,y)
+
+celload "pics\\fund.png",1
+celload "pics\\OK.png",2
+/*if(strmid(kyoku@, 0, 2)="あ"){
+	bload "text\\runking\\runking.csv",runk_csv
+}else:if(strmid(kyoku@, 0, 2)="い"){
+	bload "text\\runking\\runking2.csv",runk_csv
+}*/
+bload "text\\runking\\"+kyoku@+".csv",runk_csv
+haba_yoko=10
+haba_tate=0
+flag_runking=0
+line_num=0
+for i,0,4,1
+	for j,0,4,1
+		
+			
+		pos haba_yoko+i*256,haba_tate+j*256
+		if(i=3&&j=0){
+			celput 2
+		}else{
+			celput 1
+		}
+	next
+	
+next
+
+
+	font"Courier New", 60,16
+	pos haba_yoko+10,haba_tate+40
+	mes "Score  Rankin g!"
+	repeat 3
+		noteget sco1,line_num
+		csvstr data1,sco1
+		pos haba_yoko+15,haba_tate+40+(line_num+1)*256
+		font"Courier New", 60,16
+		mes "No."+(line_num+1)+"   "+data1(1)
+		font"Courier New", 70,16
+		pos	haba_yoko+515+256,haba_tate+40+(line_num+1)*256
+		score_simo=int(data1(0))\100000
+		score_kami=int(data1(0))/100000
+		mes int(score_simo)
+		pos	pos_kari+haba_yoko+265+256,haba_tate+40+(line_num+1)*256
+		mes int(score_kami)
+		line_num++
+	loop
+	while(flag_runking=0)
+		getkey a(0,0),48+4	;4
+		getkey a(1,0),48+5	;5
+		getkey a(2,0),48+6	;6
+		getkey a(3,0),48+7	;7
+		getkey a(0,1),65+17	;r
+		getkey a(1,1),65+19	;t
+		getkey a(2,1),65+24	;y
+		getkey a(3,1),65+20	;u
+		getkey a(0,2),65+5	;f
+		getkey a(1,2),65+6	;g
+		getkey a(2,2),65+7	;h
+		getkey a(3,2),65+9	;j
+		getkey a(0,3),65+21	;v
+		getkey a(1,3),65+1	;b
+		getkey a(2,3),65+13	;n
+		getkey a(3,3),65+12	;m
+		for i , 0 , 4 , 1
+			for j , 0 , 4 , 1				
+				pressed(i,j)=a(i,j)
+			next
+		next
+		
+		if(pressed(3,0)==1){
+			flag_runking=1
+		}
+	wend
+	return
+#global

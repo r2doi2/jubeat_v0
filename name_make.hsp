@@ -1,0 +1,910 @@
+#include "d3m.hsp"
+#module	name_make
+
+#deffunc name_write
+mmload　"se\\katya.mp3",1,0
+screen 0,1480,1024,0,0,0	; ウィンドウサイズ指定
+dim a,4,4							;ボタンの状態情報(x,y)
+dim pressed,4,4				;ボタン押されたら立つ(x,y)
+han=111
+haba_yoko=10
+haba_tate=10
+celload "pics\\fund.png",1
+pic_fd=stat		
+celload "pics\\up.png",2
+pic_up=stat		
+celload "pics\\down.png",3
+pic_dn=stat		
+celload "pics\\right.png",4
+pic_rt=stat		
+celload "pics\\left.png",5
+pic_lt=stat		
+celload "pics\\AB.png",6
+pic_ab=stat
+celload "pics\\OK.png",7
+pic_ok=stat
+celload "pics\\AB.png",8
+pic_ab2=stat
+celload "pics\\AB.png",9
+pic_ab3=stat
+dim moji, 1 ,27
+moji=" ","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"
+celdiv pic_fd,222,222	
+celdiv pic_up,222,222	
+celdiv pic_dn,222,222	
+celdiv pic_rt,222,222	
+celdiv pic_lt,222,222	
+celdiv pic_ab,222,222	
+celdiv pic_ok,222,222	
+celdiv pic_ab2,222,111	
+celdiv pic_ab3,111,222	
+for i,0,4,1
+	for j,0,4,1
+		pos haba_yoko+i*256,haba_tate+j*256
+
+		if(i==1&&j==1){
+			celput 2,0
+		}else:if(i==0&&j==1){
+			celput 5,0
+		}else:if(i==2&&j==1){
+			celput 4,0
+		}else:if(i==1&&j==3){
+			celput 3,0
+		}else:if(j==2&&i!=0){
+			celput 6
+		}else:if(j==2&&i==0){
+			celput 6,27
+		}else:if(j==3&&i==3){
+			celput 7
+		}else{
+			celput 1
+		}
+	
+		
+			
+	next
+next
+
+flag_all=0
+flag_name=0
+name_number1=0
+name_number2=0
+name_number3=0
+name_number4=0
+name_number5=0
+name_number6=0
+
+pos haba_yoko+10,haba_tate+10
+color 255,241,255
+font "ＭＳ Ｐゴシック", 40,16
+mes" 名前を入力    してください    （6文字）"
+while(flag_all=0)
+	while(flag_name=0 && flag_all=0)
+	getkey a(0,0),48+4	;4
+	getkey a(1,0),48+5	;5
+	getkey a(2,0),48+6	;6
+	getkey a(3,0),48+7	;7
+	getkey a(0,1),65+17	;r
+	getkey a(1,1),65+19	;t
+	getkey a(2,1),65+24	;y
+	getkey a(3,1),65+20	;u
+	getkey a(0,2),65+5	;f
+	getkey a(1,2),65+6	;g
+	getkey a(2,2),65+7	;h
+	getkey a(3,2),65+9	;j
+	getkey a(0,3),65+21	;v
+	getkey a(1,3),65+1	;b
+	getkey a(2,3),65+13	;n
+	getkey a(3,3),65+12	;m
+	for i , 0 , 4 , 1
+		for j , 0 , 4 , 1				
+			pressed(i,j)=a(i,j)
+		next
+	next
+		if(pressed(1,1)==1){
+			mmplay 1
+			pos haba_yoko+1*256,haba_tate+1*256
+			celput 2,1
+			if(name_number1=26){
+				name_number1=0
+			}else{
+				name_number1=name_number1+1
+			}
+			pos haba_yoko+1*256,haba_tate+2*256
+			if(name_number1!=0){
+				celput 8,name_number1+6+7*((name_number1-1)/7)
+			}else{
+				celput 8,0
+			}
+			pos haba_yoko+1*256,haba_tate+2*256+111
+			celput 8,name_number1+7*(name_number1/7)
+			wait 8
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number1
+			;mes moji(name_number1)
+			wait 25
+			pos haba_yoko+1*256,haba_tate+1*256
+			celput 2,0
+			
+		}if(pressed(1,3)==1){
+			mmplay 1
+			pos haba_yoko+1*256,haba_tate+3*256
+			celput 3,1
+			if(name_number1=0){
+				name_number1=26
+			}else{
+				name_number1=name_number1-1
+			}
+			pos haba_yoko+1*256,haba_tate+2*256
+			if(name_number1!=0){
+				celput 8,name_number1+8+7*((name_number1+1)/7)
+			}else{
+				celput 8,0
+			}
+			pos haba_yoko+1*256,haba_tate+2*256+111
+			celput 8,name_number1+7*(name_number1/7)
+			wait 8
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number1
+			;mes moji(name_number1)
+			wait 25
+			pos haba_yoko+1*256,haba_tate+3*256
+			celput 3,0
+		;}if(pressed(2,1)==1&&flag_name<5){
+			;flag_name=flag_name-1
+		}if(pressed(0,1)==1){
+			mmplay 1
+			pos haba_yoko+0*256,haba_tate+1*256
+			celput 5,1
+			flag_name=flag_name+1
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 9,1+2*name_number1
+			pos haba_yoko+1*256+han,haba_tate+2*256
+			celput 9,2*name_number2
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 9,54
+			pos haba_yoko+0*256+han,haba_tate+2*256
+			celput 9,2*name_number1
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 9,1+2*name_number2
+			pos haba_yoko+2*256+han,haba_tate+2*256
+			celput 9,2*name_number3
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 9,1+2*name_number3
+			pos haba_yoko+3*256+han,haba_tate+2*256
+			celput 9,2*name_number4
+			wait 5
+
+	
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number2
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 6,name_number1
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 6,name_number3
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 6,name_number4
+			;mes "NEXT "+moji(name_number2)
+			wait 25
+			pos haba_yoko+0*256,haba_tate+1*256
+			celput 5,0
+		}if(pressed(3,3)==1){
+					flag_all=1
+			
+		}
+		await 1	
+	wend
+	while(flag_name=1 && flag_all=0)
+	getkey a(0,0),48+4	;4
+	getkey a(1,0),48+5	;5
+	getkey a(2,0),48+6	;6
+	getkey a(3,0),48+7	;7
+	getkey a(0,1),65+17	;r
+	getkey a(1,1),65+19	;t
+	getkey a(2,1),65+24	;y
+	getkey a(3,1),65+20	;u
+	getkey a(0,2),65+5	;f
+	getkey a(1,2),65+6	;g
+	getkey a(2,2),65+7	;h
+	getkey a(3,2),65+9	;j
+	getkey a(0,3),65+21	;v
+	getkey a(1,3),65+1	;b
+	getkey a(2,3),65+13	;n
+	getkey a(3,3),65+12	;m
+	for i , 0 , 4 , 1
+		for j , 0 , 4 , 1				
+			pressed(i,j)=a(i,j)
+		next
+	next
+		if(pressed(1,1)==1){
+			mmplay 1
+			pos haba_yoko+1*256,haba_tate+1*256
+			celput 2,1
+			if(name_number2=26){
+				name_number2=0
+			}else{
+				name_number2=name_number2+1
+			}
+			;mes moji(name_number2)
+			pos haba_yoko+1*256,haba_tate+2*256
+			if(name_number2!=0){
+				celput 8,name_number2+6+7*((name_number2-1)/7)
+			}else{
+				celput 8,0
+			}
+			pos haba_yoko+1*256,haba_tate+2*256+111
+			celput 8,name_number2+7*(name_number2/7)
+			wait 8
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number2
+			wait 25
+			pos haba_yoko+1*256,haba_tate+1*256
+			celput 2,0
+		}if(pressed(1,3)==1){
+			mmplay 1
+			pos haba_yoko+1*256,haba_tate+3*256
+			celput 3,1
+			if(name_number2=0){
+				name_number2=26
+			}else{
+				name_number2=name_number2-1
+			}
+			;mes moji(name_number2)
+			pos haba_yoko+1*256,haba_tate+2*256
+			if(name_number2!=0){
+				celput 8,name_number2+8+7*((name_number2+1)/7)
+			}else{
+				celput 8,0
+			}
+			pos haba_yoko+1*256,haba_tate+2*256+111
+			celput 8,name_number2+7*(name_number2/7)
+			wait 8
+
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number2
+			wait 25
+			pos haba_yoko+1*256,haba_tate+3*256
+			celput 3,0
+		}if(pressed(2,1)==1){
+			mmplay 1
+			pos haba_yoko+2*256,haba_tate+1*256
+			celput 4,1
+			flag_name=flag_name-1
+			;mes "BACK "+moji(name_number1)
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 9,1+2*name_number1
+			pos haba_yoko+1*256+han,haba_tate+2*256
+			celput 9,2*name_number2
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 9,1+2*name_number2
+			pos haba_yoko+2*256+han,haba_tate+2*256
+			celput 9,2*name_number3
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 9,1+2*name_number3
+			pos haba_yoko+3*256+han,haba_tate+2*256
+			celput 9,2*name_number4
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 9,54
+			pos haba_yoko+0*256+han,haba_tate+2*256
+			celput 9,2*name_number1
+			wait 5
+	
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number1
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 6,name_number2
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 6,name_number3
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 6,27
+			wait 25	
+			pos haba_yoko+2*256,haba_tate+1*256
+			celput 4,0		
+		}if(pressed(0,1)==1){
+			mmplay 1
+			flag_name=flag_name+1
+			;mes "NEXT "+moji(name_number3)
+			pos haba_yoko+0*256,haba_tate+1*256
+			celput 5,1
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 9,1+2*name_number2
+			pos haba_yoko+1*256+han,haba_tate+2*256
+			celput 9,2*name_number3
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 9,1+2*name_number3
+			pos haba_yoko+2*256+han,haba_tate+2*256
+			celput 9,2*name_number4
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 9,1+2*name_number4
+			pos haba_yoko+3*256+han,haba_tate+2*256
+			celput 9,2*name_number5
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 9,1+2*name_number1
+			pos haba_yoko+0*256+han,haba_tate+2*256
+			celput 9,2*name_number2
+			wait 5
+	
+			
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number3
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 6,name_number4
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 6,name_number5
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 6,name_number2
+			wait 25	
+			pos haba_yoko+0*256,haba_tate+1*256
+			celput 5,0
+		}if(pressed(3,3)==1){
+			flag_all=1
+			
+		}
+		await 1	
+	wend
+	while(flag_name=2 && flag_all=0)
+	getkey a(0,0),48+4	;4
+	getkey a(1,0),48+5	;5
+	getkey a(2,0),48+6	;6
+	getkey a(3,0),48+7	;7
+	getkey a(0,1),65+17	;r
+	getkey a(1,1),65+19	;t
+	getkey a(2,1),65+24	;y
+	getkey a(3,1),65+20	;u
+	getkey a(0,2),65+5	;f
+	getkey a(1,2),65+6	;g
+	getkey a(2,2),65+7	;h
+	getkey a(3,2),65+9	;j
+	getkey a(0,3),65+21	;v
+	getkey a(1,3),65+1	;b
+	getkey a(2,3),65+13	;n
+	getkey a(3,3),65+12	;m
+	for i , 0 , 4 , 1
+		for j , 0 , 4 , 1				
+			pressed(i,j)=a(i,j)
+		next
+	next
+		if(pressed(1,1)==1){
+			mmplay 1
+			pos haba_yoko+1*256,haba_tate+1*256
+			celput 2,1
+			if(name_number3=26){
+				name_number3=0
+			}else{
+				name_number3=name_number3+1
+			}
+			;mes moji(name_number3)
+			pos haba_yoko+1*256,haba_tate+2*256
+			if(name_number3!=0){
+				celput 8,name_number3+6+7*((name_number3-1)/7)
+			}else{
+				celput 8,0
+			}
+			pos haba_yoko+1*256,haba_tate+2*256+111
+			celput 8,name_number3+7*(name_number3/7)
+			wait 8
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number3
+			wait 25	
+			pos haba_yoko+1*256,haba_tate+1*256
+			celput 2,0
+		}if(pressed(1,3)==1){
+			mmplay 1
+			pos haba_yoko+1*256,haba_tate+3*256
+			celput 3,1
+			if(name_number3=0){
+				name_number3=26
+			}else{
+				name_number3=name_number3-1
+			}
+			;mes moji(name_number3)
+			pos haba_yoko+1*256,haba_tate+2*256
+			if(name_number3!=0){
+				celput 8,name_number3+8+7*((name_number3+1)/7)
+			}else{
+				celput 8,0
+			}
+			pos haba_yoko+1*256,haba_tate+2*256+111
+			celput 8,name_number3+7*(name_number3/7)
+			wait 8
+
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number3
+			wait 25	
+			pos haba_yoko+1*256,haba_tate+3*256
+			celput 3,0
+		}if(pressed(2,1)==1){
+			mmplay 1
+			pos haba_yoko+2*256,haba_tate+1*256
+			celput 4,1
+			flag_name=flag_name-1
+			;mes"BACK "+moji(name_number2)
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 9,1+2*name_number2
+			pos haba_yoko+1*256+han,haba_tate+2*256
+			celput 9,2*name_number3
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 9,1+2*name_number3
+			pos haba_yoko+2*256+han,haba_tate+2*256
+			celput 9,2*name_number4
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 9,1+2*name_number4
+			pos haba_yoko+3*256+han,haba_tate+2*256
+			celput 9,2*name_number5
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 9,1+2*name_number1
+			pos haba_yoko+0*256+han,haba_tate+2*256
+			celput 9,2*name_number2
+			wait 5
+	
+			
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number2
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 6,name_number3
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 6,name_number4
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 6,name_number1
+			wait 25
+			pos haba_yoko+2*256,haba_tate+1*256
+			celput 4,0
+		}if(pressed(0,1)==1){
+			mmplay 1
+			flag_name=flag_name+1
+			;mes"NEXT "+moji(name_number4)
+			pos haba_yoko+0*256,haba_tate+1*256
+			celput 5,1
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 9,1+2*name_number3
+			pos haba_yoko+1*256+han,haba_tate+2*256
+			celput 9,2*name_number4
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 9,1+2*name_number4
+			pos haba_yoko+2*256+han,haba_tate+2*256
+			celput 9,2*name_number5
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 9,1+2*name_number5
+			pos haba_yoko+3*256+han,haba_tate+2*256
+			celput 9,2*name_number6
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 9,1+2*name_number2
+			pos haba_yoko+0*256+han,haba_tate+2*256
+			celput 9,2*name_number3
+			wait 5
+	
+			
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number4
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 6,name_number5
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 6,name_number6
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 6,name_number3
+			wait 25	
+			pos haba_yoko+0*256,haba_tate+1*256
+			celput 5,0
+		}if(pressed(3,3)==1){
+			flag_all=1
+			
+		}
+		await 1	
+	wend
+	while(flag_name=3 && flag_all=0)
+	getkey a(0,0),48+4	;4
+	getkey a(1,0),48+5	;5
+	getkey a(2,0),48+6	;6
+	getkey a(3,0),48+7	;7
+	getkey a(0,1),65+17	;r
+	getkey a(1,1),65+19	;t
+	getkey a(2,1),65+24	;y
+	getkey a(3,1),65+20	;u
+	getkey a(0,2),65+5	;f
+	getkey a(1,2),65+6	;g
+	getkey a(2,2),65+7	;h
+	getkey a(3,2),65+9	;j
+	getkey a(0,3),65+21	;v
+	getkey a(1,3),65+1	;b
+	getkey a(2,3),65+13	;n
+	getkey a(3,3),65+12	;m
+	for i , 0 , 4 , 1
+		for j , 0 , 4 , 1				
+			pressed(i,j)=a(i,j)
+		next
+	next
+		if(pressed(1,1)==1){
+			mmplay 1
+			pos haba_yoko+1*256,haba_tate+1*256
+			celput 2,1
+			if(name_number4=26){
+				name_number4=0
+			}else{
+				name_number4=name_number4+1
+			}
+			;mes moji(name_number4)
+			pos haba_yoko+1*256,haba_tate+2*256
+			if(name_number4!=0){
+				
+				celput 8,name_number4+6+7*((name_number4-1)/7)
+			}else{
+				celput 8,0
+			}
+			pos haba_yoko+1*256,haba_tate+2*256+111
+			celput 8,name_number4+7*(name_number4/7)
+			wait 8
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number4
+			wait 25	
+			pos haba_yoko+1*256,haba_tate+1*256
+			celput 2,0
+		}if(pressed(1,3)==1){
+			mmplay 1
+			pos haba_yoko+1*256,haba_tate+3*256
+			celput 3,1
+			if(name_number4=0){
+				name_number4=26
+			}else{
+				name_number4=name_number4-1
+			}
+			;mes moji(name_number4)
+			pos haba_yoko+1*256,haba_tate+2*256
+			if(name_number4!=0){
+				celput 8,name_number4+8+7*((name_number4+1)/7)
+			}else{
+				celput 8,0
+			}
+			pos haba_yoko+1*256,haba_tate+2*256+111
+			celput 8,name_number4+7*(name_number4/7)
+			wait 8
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number4
+			wait 25	
+			pos haba_yoko+1*256,haba_tate+3*256
+			celput 3,0
+		}if(pressed(2,1)==1){
+			mmplay 1
+			pos haba_yoko+2*256,haba_tate+1*256
+			celput 4,1
+			flag_name=flag_name-1
+			;mes "BACK "+moji(name_number3)
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 9,1+2*name_number3
+			pos haba_yoko+1*256+han,haba_tate+2*256
+			celput 9,2*name_number4
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 9,1+2*name_number4
+			pos haba_yoko+2*256+han,haba_tate+2*256
+			celput 9,2*name_number5
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 9,1+2*name_number5
+			pos haba_yoko+3*256+han,haba_tate+2*256
+			celput 9,2*name_number6
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 9,1+2*name_number2
+			pos haba_yoko+0*256+han,haba_tate+2*256
+			celput 9,2*name_number3
+			wait 5
+	
+	
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number3
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 6,name_number4
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 6,name_number5
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 6,name_number2
+			wait 25	
+			pos haba_yoko+2*256,haba_tate+1*256
+			celput 4,0
+		}if(pressed(0,1)==1){
+			mmplay 1
+			flag_name=flag_name+1
+			;mes "NEXT "+moji(name_number5)
+			pos haba_yoko+0*256,haba_tate+1*256
+			celput 5,1
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 9,1+2*name_number4
+			pos haba_yoko+1*256+han,haba_tate+2*256
+			celput 9,2*name_number5
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 9,1+2*name_number5
+			pos haba_yoko+2*256+han,haba_tate+2*256
+			celput 9,2*name_number6
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 9,1+2*name_number6
+			pos haba_yoko+3*256+han,haba_tate+2*256
+			celput 9,54
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 9,1+2*name_number3
+			pos haba_yoko+0*256+han,haba_tate+2*256
+			celput 9,2*name_number4
+			wait 5
+	
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number5
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 6,name_number6
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 6,27
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 6,name_number4
+			wait 25	
+			pos haba_yoko+0*256,haba_tate+1*256
+			celput 5,0
+		}if(pressed(3,3)==1){
+			flag_all=1
+			
+		}
+		await 1	
+	wend
+	
+	while(flag_name=4 && flag_all=0)
+	getkey a(0,0),48+4	;4
+	getkey a(1,0),48+5	;5
+	getkey a(2,0),48+6	;6
+	getkey a(3,0),48+7	;7
+	getkey a(0,1),65+17	;r
+	getkey a(1,1),65+19	;t
+	getkey a(2,1),65+24	;y
+	getkey a(3,1),65+20	;u
+	getkey a(0,2),65+5	;f
+	getkey a(1,2),65+6	;g
+	getkey a(2,2),65+7	;h
+	getkey a(3,2),65+9	;j
+	getkey a(0,3),65+21	;v
+	getkey a(1,3),65+1	;b
+	getkey a(2,3),65+13	;n
+	getkey a(3,3),65+12	;m
+	for i , 0 , 4 , 1
+		for j , 0 , 4 , 1				
+			pressed(i,j)=a(i,j)
+		next
+	next
+		if(pressed(1,1)==1){
+			mmplay 1
+			pos haba_yoko+1*256,haba_tate+1*256
+			celput 2,1
+			if(name_number5=26){
+				name_number5=0
+			}else{
+				name_number5=name_number5+1
+			}
+			;mes moji(name_number5)
+			pos haba_yoko+1*256,haba_tate+2*256
+			if(name_number5!=0){
+				celput 8,name_number5+6+7*((name_number5-1)/7)
+			}else{
+				celput 8,0
+			}
+			pos haba_yoko+1*256,haba_tate+2*256+111
+			celput 8,name_number5+7*(name_number5/7)
+			wait 8
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number5
+			wait 25	
+			pos haba_yoko+1*256,haba_tate+1*256
+			celput 2,0
+		}if(pressed(1,3)==1){
+			mmplay 1
+			pos haba_yoko+1*256,haba_tate+3*256
+			celput 3,1
+			if(name_number5=0){
+				name_number5=26
+			}else{
+				name_number5=name_number5-1
+			}
+		
+			;mes moji(name_number5)
+			pos haba_yoko+1*256,haba_tate+2*256
+			if(name_number5!=0){
+				celput 8,name_number5+8+7*((name_number5+1)/7)
+			}else{
+				celput 8,0
+			}
+			pos haba_yoko+1*256,haba_tate+2*256+111
+			celput 8,name_number5+7*(name_number5/7)
+			wait 8
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number5
+			wait 25	
+			pos haba_yoko+1*256,haba_tate+3*256
+			celput 3,0
+		}if(pressed(2,1)==1){
+			mmplay 1
+			pos haba_yoko+2*256,haba_tate+1*256
+			celput 4,1
+			flag_name=flag_name-1
+			;mes "BACK "+moji(name_number4)
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 9,1+2*name_number4
+			pos haba_yoko+1*256+han,haba_tate+2*256
+			celput 9,2*name_number5
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 9,1+2*name_number5
+			pos haba_yoko+2*256+han,haba_tate+2*256
+			celput 9,2*name_number6
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 9,1+2*name_number6
+			pos haba_yoko+3*256+han,haba_tate+2*256
+			celput 9,54
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 9,1+2*name_number3
+			pos haba_yoko+0*256+han,haba_tate+2*256
+			celput 9,2*name_number4
+			wait 5
+	
+			
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number4
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 6,name_number5
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 6,name_number6
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 6,name_number3
+			wait 25	
+			pos haba_yoko+2*256,haba_tate+1*256
+			celput 4,0
+		}if(pressed(0,1)==1){
+			mmplay 1
+			flag_name=flag_name+1
+			;mes "NEXT "+moji(name_number6)
+			pos haba_yoko+0*256,haba_tate+1*256
+			celput 5,1
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 9,1+2*name_number5
+			pos haba_yoko+1*256+han,haba_tate+2*256
+			celput 9,2*name_number6
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 9,1+2*name_number6
+			pos haba_yoko+2*256+han,haba_tate+2*256
+			celput 9,54
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 9,54
+			pos haba_yoko+3*256+han,haba_tate+2*256
+			celput 9,54
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 9,54
+			pos haba_yoko+0*256+han,haba_tate+2*256
+			celput 9,54
+			wait 5
+			
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number6
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 6,27
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 6,27
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 6,name_number5
+			wait 25	
+			pos haba_yoko+0*256,haba_tate+1*256
+			celput 5,0
+		}if(pressed(3,3)==1){
+			flag_all=1
+			
+		}
+		await 1	
+	wend
+	while(flag_name=5 && flag_all=0)
+	getkey a(0,0),48+4	;4
+	getkey a(1,0),48+5	;5
+	getkey a(2,0),48+6	;6
+	getkey a(3,0),48+7	;7
+	getkey a(0,1),65+17	;r
+	getkey a(1,1),65+19	;t
+	getkey a(2,1),65+24	;y
+	getkey a(3,1),65+20	;u
+	getkey a(0,2),65+5	;f
+	getkey a(1,2),65+6	;g
+	getkey a(2,2),65+7	;h
+	getkey a(3,2),65+9	;j
+	getkey a(0,3),65+21	;v
+	getkey a(1,3),65+1	;b
+	getkey a(2,3),65+13	;n
+	getkey a(3,3),65+12	;m
+	for i , 0 , 4 , 1
+		for j , 0 , 4 , 1				
+			pressed(i,j)=a(i,j)
+		next
+	next
+		if(pressed(1,1)==1){
+			mmplay 1
+			pos haba_yoko+1*256,haba_tate+1*256
+			celput 2,1
+			if(name_number6=26){
+				name_number6=0
+			}else{
+				name_number6=name_number6+1
+			}
+			;mes moji(name_number6)
+			pos haba_yoko+1*256,haba_tate+2*256
+			if(name_number6!=0){
+				celput 8,name_number6+6+7*((name_number6-1)/7)
+			}else{
+				celput 8,0
+			}
+			pos haba_yoko+1*256,haba_tate+2*256+111
+			celput 8,name_number6+7*(name_number6/7)
+			wait 8
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number6
+			wait 25	
+			pos haba_yoko+1*256,haba_tate+1*256
+			celput 2,0
+		}if(pressed(1,3)==1){
+			mmplay 1
+			pos haba_yoko+1*256,haba_tate+3*256
+			celput 3,1
+			if(name_number6=0){
+				name_number6=26
+			}else{
+				name_number6=name_number6-1
+			}
+			;mes moji(name_number6)
+			pos haba_yoko+1*256,haba_tate+2*256
+			if(name_number6!=0){
+				celput 8,name_number6+8+7*((name_number6+1)/7)
+			}else{
+				celput 8,0
+			}
+			pos haba_yoko+1*256,haba_tate+2*256+111
+			celput 8,name_number6+7*(name_number6/7)
+			wait 8
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number6
+			wait 25	
+			pos haba_yoko+1*256,haba_tate+3*256
+			celput 3,0
+		}if(pressed(2,1)==1){
+			mmplay 1
+			pos haba_yoko+2*256,haba_tate+1*256
+			celput 4,1
+			flag_name=flag_name-1
+			;mes"BACK "+moji(name_number5)
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 9,1+2*name_number5
+			pos haba_yoko+1*256+han,haba_tate+2*256
+			celput 9,2*name_number6
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 9,1+2*name_number6
+			pos haba_yoko+2*256+han,haba_tate+2*256
+			celput 9,54
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 9,54
+			pos haba_yoko+3*256+han,haba_tate+2*256
+			celput 9,54
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 9,54
+			pos haba_yoko+0*256+han,haba_tate+2*256
+			celput 9,54
+			wait 5
+	
+			
+			pos haba_yoko+1*256,haba_tate+2*256
+			celput 6,name_number5
+			pos haba_yoko+2*256,haba_tate+2*256
+			celput 6,name_number6
+			pos haba_yoko+3*256,haba_tate+2*256
+			celput 6,27
+			pos haba_yoko+0*256,haba_tate+2*256
+			celput 6,name_number4
+			wait 25
+			pos haba_yoko+2*256,haba_tate+1*256
+			celput 4,0
+		;}if(pressed(0,1)==1&&flag_name>0){
+			;flag_name=flag_name+1
+
+		}if(pressed(3,3)==1){
+			flag_all=1
+			
+		}
+		await 1	
+	wend
+wend
+			pos 10,100+4*110
+
+	return
+#global

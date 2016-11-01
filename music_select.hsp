@@ -1,0 +1,249 @@
+#module music_selection
+#include "hspda.as"
+#deffunc music_select
+*main
+	sdim list, 256			//ディレクトリデータバッファ
+	sdim cline,50			//ファイルデータバッファ
+	sdim csv,10000			//csvデータバッファ
+	sdim csvdata,10,100
+	sdim csvpass,64,99,3
+	p_size = 222			//picture_size 画像の大きさ,今回は正方形なので1つ
+	p_space = 256			//picuter_space 画像の左上と次の画像の左上との距離
+	
+	pass = ""
+	temp = 0
+	offset = 0
+	
+	gosub *ip
+	gosub *op
+	
+	return pass
+*ip
+	dirlist list, "text\\*.csv",3			//ファイル名を読み込むぜ！
+	notesel list							//メモリノートパッドがうんぬんかんぬん
+	listmax = notemax						//ファイル数を記憶するぜ！
+	repeat listmax							
+		noteget data,cnt					//指定行の内容を読み出すぜ！
+		csvpass.(cnt/3).(cnt\3) = data		//csvpassを記憶するぜ！
+		data = strtrim(data,2,'v')			//.csvを排除するぜ！
+		data = strtrim(data,2,'s')
+		data = strtrim(data,2,'c')
+		data = strtrim(data,2,'.')
+		mpicpass(cnt) = data+".jpg"			//.jpgを追加して記憶するぜ！
+	loop
+
+	if listmax\3 != 0{					//b_line buffer_line bufferに表示している画像の行数
+		b_line = listmax/3+1
+	}else{
+		b_line = listmax/3
+	}
+	b_max = b_line*p_size				//b_max buffer_max bufferの横幅
+	buffer 1,b_max,p_size*4				//buffer領域展開
+	color
+	boxf
+	
+	dirlist list,"mpics\\*.jpg",3		//画像ファイルから画像持ってくるぜ！
+	notesel list
+	mpicmax = notemax
+	repeat mpicmax
+		noteget data,cnt				//画像の名前を配列に落とし込むぜ！
+		mpicdata(cnt) = data
+	loop
+	repeat listmax
+		cnt1 = cnt
+		flag = 0
+		repeat mpicmax
+			if mpicpass(cnt1) = mpicdata(cnt){			//csvファイルと画像ファイルを比較して同じ名前のものがあったら出力するぜ！
+				pos p_size*(cnt1/3),p_size*(cnt1\3)
+				picload("mpics\\"+mpicdata(cnt)),1
+				flag =1
+			}
+		loop
+		if flag = 0{
+			pos p_size*(cnt1/3),p_size*(cnt1\3)			//君は同じ名前の画像ファイルがなかったんだ。可哀想に。
+			picload("mpics\\noimage.jpg"),1
+		}
+	loop
+	pos p_size*0,p_size*3				//"左に移動ボタン"画像を出力するぜ
+	picload("mpics\\left.jpg"),1
+	pos p_size*1,p_size*3				//"右に移動ボタン"画像を出力するぜ
+	picload("mpics\\right.jpg"),1
+	pos p_size*3,p_size*3				//"決定ボタン"画像を出力するぜ
+	picload("mpics\\kettei.jpg"),1
+	return
+
+*op
+	screen 0,1280,1024,0,0,0
+
+	i_position = 10,0					//initial_position 初期位置
+	b_position = 0						//buffer_
+	csvname = ""						//選択された曲のcsvpassを記憶する変数
+	flag = 0
+	finish = 0 
+	
+	repeat
+		redraw 0					//画面の更新をしない
+	
+		color 		//背景色指定
+		boxf		//背景をクリアする
+
+		onkey gosub *jump			//キー入力
+		if finish = 1 : break
+		
+		repeat 4				//buffer領域から対応した画像を持ってくるぜ！
+			cnt1 = cnt
+			if b_position+cnt1 > b_line-1{
+				x = b_position+cnt1-b_line
+			}else{
+				x = b_position+cnt1
+			}
+			repeat 3
+				pos i_position(0)+p_space*cnt1, i_position(1)+p_space*cnt
+				gcopy 1, x*p_size, p_size*cnt, p_size, p_size
+			loop
+		loop
+		repeat 4				//ボタン類の画像を持ってくるぜ！
+			pos i_position(0)+p_space*cnt,i_position(1)+p_space*3
+			gcopy 1, p_size*cnt, p_size*3, p_size, p_size
+		loop
+	
+		if flag = 1{
+			color 200, 200, 255
+			boxf bp(0), bp(1), bp(0)+p_size-1, bp(1)+12
+			boxf bp(0), bp(1), bp(0)+12, bp(1)+p_size-1
+			boxf bp(0)+p_size, bp(1)+p_size, bp(0), bp(1)+p_size-12
+			boxf bp(0)+p_size, bp(1)+p_size, bp(0)+p_size-12, bp(1)
+		}
+		redraw 1	//画面を一気に書き換える
+		await 30	//100分の3秒待つ
+	loop
+	return
+
+*jump
+		if wparam=86{			//vキーで1つ左へ
+			if b_position > 0{
+				b_position--
+			}else : if b_position = 0{
+				b_position = b_line-1
+			}
+			memo = csvpass.(b_line-1).(0), csvpass.(b_line-1).(1), csvpass.(b_line-1).(2)
+			repeat b_line-1
+				csvpass.(b_line-1-cnt).0 = csvpass.(b_line-1-cnt-1).0
+				csvpass.(b_line-1-cnt).1 = csvpass.(b_line-1-cnt-1).1
+				csvpass.(b_line-1-cnt).2 = csvpass.(b_line-1-cnt-1).2
+			loop
+			csvpass.0.0 = memo(0)
+			csvpass.0.1 = memo(1)
+			csvpass.0.2 = memo(2)
+			flag = 0
+		}
+		if wparam=66{			//bキーで1つ右へ
+			if b_position < b_line-1{
+				b_position++
+			}else : if b_position = b_line-1{
+				b_position = 0
+			}
+			memo = csvpass.(0).(0), csvpass.(0).(1), csvpass.(0).(2)
+				repeat b_line-1
+					csvpass.cnt.0 = csvpass.(cnt+1).0
+					csvpass.cnt.1 = csvpass.(cnt+1).1
+					csvpass.cnt.2 = csvpass.(cnt+1).2
+			loop
+			csvpass.(b_line-1).0 = memo(0)
+			csvpass.(b_line-1).1 = memo(1)
+			csvpass.(b_line-1).2 = memo(2)
+			flag = 0
+		}
+	
+		if wparam=52 {
+			csvname = csvpass.0.0	//4キー
+			flag = 1
+			bp = i_position(0)+0*p_space, i_position(1)+0*p_space
+		}
+		if wparam=53 {
+			csvname = csvpass.1.0	//5キー
+			flag = 1
+			bp = i_position(0)+1*p_space, i_position(1)+0*p_space
+		}
+		if wparam=54 {
+			csvname = csvpass.2.0	//6キー
+			flag = 1
+			bp = i_position(0)+2*p_space, i_position(1)+0*p_space
+		}
+		if wparam=55 {
+			csvname = csvpass.3.0	//7キー
+			flag = 1
+			bp = i_position(0)+3*p_space, i_position(1)+0*p_space
+		}
+		if wparam=82 {
+			csvname = csvpass.0.1	//rキー
+			flag = 1
+			bp = i_position(0)+0*p_space, i_position(1)+1*p_space
+		}
+		if wparam=84 {
+			csvname = csvpass.1.1	//tキー
+			flag = 1
+			bp = i_position(0)+1*p_space, i_position(1)+1*p_space
+		}
+		if wparam=89 {
+			csvname = csvpass.2.1	//yキー
+			flag = 1
+			bp = i_position(0)+2*p_space, i_position(1)+1*p_space
+		}
+		if wparam=85 {
+			csvname = csvpass.3.1	//uキー
+			flag = 1
+			bp = i_position(0)+3*p_space, i_position(1)+1*p_space
+		}
+		if wparam=70 {
+			csvname = csvpass.0.2	//fキー
+			flag = 1
+			bp = i_position(0)+0*p_space, i_position(1)+2*p_space
+		}
+		if wparam=71 {
+			csvname = csvpass.1.2	//gキー
+			flag = 1
+			bp = i_position(0)+1*p_space, i_position(1)+2*p_space
+		}
+		if wparam=72 {
+			csvname = csvpass.2.2	//hキー
+			flag = 1
+			bp = i_position(0)+2*p_space, i_position(1)+2*p_space
+		}
+		if wparam=74 {
+			csvname = csvpass.3.2	//jキー
+			flag = 1
+			bp = i_position(0)+3*p_space, i_position(1)+2*p_space
+		}
+		if wparam=77 : gosub *select			//mキーで決定
+
+		return
+	
+*select										//選択された曲のパス，テンポ．オフセットを求める
+	if csvname = "" : return
+	
+	bload "text\\"+csvname,csv			//csv読み込み
+	notesel csv
+	csvmax = notemax
+	noteget cline,0				//pass読み込み
+	csvstr csvdata, cline
+	pass = csvdata.1
+	noteget cline,1
+	csvstr csvdata, cline
+	musicname = csvdata.1
+	noteget cline,2				//temp読み込み
+	csvstr csvdata, cline
+	temp = csvdata.1
+	noteget cline,3				//offset読み込み
+	csvstr csvdata, cline
+	offset = csvdata.1
+	
+	finish = 1
+	//dialog ""+pass+"\n"+temp+"\n"+offset
+	return
+
+#global
+/*
+*main
+	music_select
+*/

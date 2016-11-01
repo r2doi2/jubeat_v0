@@ -38,7 +38,7 @@
 	bairitu = 2
 	heartbeat_interval = 60000/tempo@	;一拍間隔(tempoはincludeされたmain.hsp内の変数だが、末尾に@
 																		;を付ければ利用できる。)
-	await 10000
+	await 5000
 	time1 = d3timer()	//時計
 	time2 = d3timer()	//ノーツ描画計測
 	time3 = d3timer()	//譜面読み込み計測

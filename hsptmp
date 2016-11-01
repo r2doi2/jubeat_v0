@@ -1,12 +1,33 @@
-#include "notu_judge.hsp"
-csvtext="text\\h28_kosensai.csv"
-notu_read(csvtext)
-music_file=data@fumen_read(1)
-notu_read(csvtext)
-tempo=data@fumen_read(1)
-notu_read(csvtext)
-notu_read(csvtext)
-offset=data@fumen_read(1)
-
-write_notu
-title "no-tu end!!"
+#include "music_select.hsp"
+#include "newnotu_judge.hsp"
+#include "name_make.hsp"
+#include "result_sisaku.hsp"
+#include "runking_sisaku.hsp"
+#include "runking_viwer.hsp"
+*main
+	
+	title "music select!!"
+	music_select
+	csvtext = "text\\"+csvname@music_selection
+	music_file = pass@music_selection
+	tempo = temp@music_selection
+	offset = offset@music_selection
+	line_num@fumen_read=0
+	notu_read(csvtext)
+	notu_read(csvtext)
+	notu_read(csvtext)
+	notu_read(csvtext)
+	write_notu
+	title "no-tu end!!"
+	perfect_count = pfcount@notu_judge
+	good_count = gdcount@notu_judge
+	bad_count = bdcount@notu_judge
+	kyoku = musicname@music_selection
+	result_start
+	if(flag_runk@result_sisaku==1){
+		name_write
+		runking_write
+		runking_viw
+	}
+	title "game end!!"
+goto *main
